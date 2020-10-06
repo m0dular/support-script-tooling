@@ -1,4 +1,4 @@
-#!/usr/bin/awk -f
+#!/usr/bin/env -S gawk -f
 
 # Sample usage:
 # gunzip -c enterprise/find/_opt_puppetlabs.txt.gz | dirs_largest.awk | sort -rn | head | numfmt --to=si

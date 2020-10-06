@@ -1,4 +1,4 @@
-#!/usr/bin/awk -f
+#!/usr/bin/env -S gawk -f
 
 # Sample usage:
 # echo "Average Count Hostname" && puppetdb_longest_queries.awk logs/puppetdb/puppetdb.log  | sort -rn | tail | column -t
