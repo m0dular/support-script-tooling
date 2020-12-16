@@ -15,16 +15,18 @@ trap cleanup EXIT
 
 [[ $@ =~ --help ]] && {
   cat <<EOF
-usage: top-api-calls.sh [-b] [-g] <access_files>
+usage: top-api-calls.sh [-b] [-g] [-c] <access_files>
   -b uses the JRuby borrow time instead of overall duration
-  -g plots the output in gnuplot
+  -g plots the average durations in gnuplot
+     -c can be used in combination with -g to plot counts
 EOF
+exit
 }
 
 mlr_tmp="$(mktemp)"
 tmp_files+=("$mlr_tmp")
 
-while getopts ":bg" opt; do
+while getopts ":bgc" opt; do
   case "$opt" in
     b)
       borrow=true
@@ -35,6 +37,9 @@ while getopts ":bg" opt; do
         exit 1
       }
       graph=true
+      ;;
+    c)
+      count=true
     esac
   done
 
@@ -115,8 +120,9 @@ plot_tmp="$(mktemp)"
 tmp_files+=("$plot_tmp")
 
 # TODO: remember how tf this works
+if [[ $count ]]; then mlr_field=3; else mlr_field=4; fi
 sed '/^date/d' "$mlr_tmp" | sort -k2,2 \
-  | awk 'NR == 1 { printf "\"%s\"\n", $2 } NR >1 && prev != $2 { print ""; print ""; printf "\"%s\"\n", $2} { print $1 " " $4 }  { prev = $2 }' >"$plot_tmp"
+  | gawk -v n="$mlr_field" 'NR == 1 { printf "\"%s\"\n", $2 } NR >1 && prev != $2 { print ""; print ""; printf "\"%s\"\n", $2} { print $1 " " $n }  { prev = $2 }' >"$plot_tmp"
 
 gnuplot <<EOF
 set timefmt '%Y-%m-%dT%H:%M-%S'
