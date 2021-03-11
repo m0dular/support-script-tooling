@@ -4,7 +4,6 @@
 
 # TODO: check for number of fields in access log when using -b
 # Figure out how to graph with -b
-# Plot counts
 
 cleanup() {
   for f in "${tmp_files[@]}"; do
