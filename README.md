@@ -1,6 +1,7 @@
 # support-script-tooling
 
 ## Requirements
+* mlr
 * gawk
 * gnuplot
 
