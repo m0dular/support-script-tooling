@@ -49,15 +49,18 @@ if [[ $graph && $borrow ]]; then
   unset graph
 fi
 
+perl_command=(perl -ne '/^\S+ \S+ \S+ \[[^\]]+\] "[A-Z]+ [^ "]+? HTTP\/[0-9.]+" [0-9]{3} [0-9]+|- "[^"]*" "[^"]*"/ && print')
+
 for file in "$@"; do
   printf 'Processing: %s\n' "$file" >&2
 
   case "${file##*.}" in
     gz)
-      read_cmd=(gunzip -c)
+      read_cmd=("gunzip" "-c" "--" "$file")
       ;;
     *)
-      read_cmd=(cat)
+      # UUOC, but it makes setting up read_cmd easier
+      read_cmd=("cat" "--" "$file")
       ;;
   esac
 
@@ -65,7 +68,7 @@ for file in "$@"; do
     puppetserver-access*)
       if [[ $borrow ]]; then duration_field=0; else duration_field=2; fi
 
-      "${read_cmd[@]}" "$file" \
+      "${read_cmd[@]}" | "${perl_command[@]}" \
         | gawk -v n="$duration_field" \
           'BEGIN { print "date,path,duration" }
                {
