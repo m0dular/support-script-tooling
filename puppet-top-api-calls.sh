@@ -7,7 +7,7 @@
 
 cleanup() {
   for f in "${tmp_files[@]}"; do
-    rm -- "$f"
+    [[ -e $f ]] && rm -- "$f"
   done
 }
 trap cleanup EXIT
@@ -44,10 +44,6 @@ while getopts ":bgc" opt; do
 
 shift $((OPTIND-1))
 
-if [[ $graph && $borrow ]]; then
-  printf "%s\n" "Graphing output of borrow times currently not supported" >&2
-  unset graph
-fi
 
 perl_command=(perl -ne '/^\S+ \S+ \S+ \[[^\]]+\] "[A-Z]+ [^ "]+? HTTP\/[0-9.]+" [0-9]{3} [0-9]+|- "[^"]*" "[^"]*"/ && print')
 
@@ -123,6 +119,15 @@ tmp_files+=("$plot_tmp")
 
 # TODO: remember how tf this works
 if [[ $count ]]; then mlr_field=3; else mlr_field=4; fi
+
+if [[ $borrow ]]; then
+  borrow_tmp="$(mktemp)"
+  tmp_files+=("$borrow_tmp")
+
+  sed '/-$/d' "$mlr_tmp" >"$borrow_tmp"
+  mv "$borrow_tmp" "$mlr_tmp"
+fi
+
 sed '/^date/d' "$mlr_tmp" | sort -k2,2 \
   | gawk -v n="$mlr_field" 'NR == 1 { printf "\"%s\"\n", $2 } NR >1 && prev != $2 { print ""; print ""; printf "\"%s\"\n", $2} { print $1 " " $n }  { prev = $2 }' >"$plot_tmp"
 
