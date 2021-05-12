@@ -22,6 +22,26 @@ puppetserver_latest() {
   "$base_dir"/puppet-top-api-calls.sh -g "${_latest[0]}"
 }
 
+puppetserver_longest_borrows() {
+  latest_logs "puppetserver-access"
+  (( ${#_latest[@]} > 0 )) || {
+    warn 'No puppetserver-access.log found.' 'Please run me from the root of an extracted support script'
+    return
+  }
+
+  "$base_dir"/puppetserver_longest_borrows.awk "${_latest[0]}" | sort -nr | cut -f2- -d ' ' | head
+}
+
+puppetserver_largest_reports() {
+  latest_logs "puppetserver-access"
+  (( ${#_latest[@]} > 0 )) || {
+    warn 'No puppetserver-access.log found.' 'Please run me from the root of an extracted support script'
+    return
+  }
+
+  "$base_dir"/puppetserver_largest_reports.awk "${_latest[0]}" | sort -nr | cut -f2- -d ' ' | head
+}
+
 confirm_opt() {
   cur_opt=$1
   cur_menu=("$@")
@@ -33,9 +53,10 @@ confirm_opt() {
 comm_cmds() {
   declare -A local menu=(
     ['Plot latest puppetserver-access.log']=puppetserver_latest
+    ['Longest JRuby borrow times']=puppetserver_longest_borrows
+    ['Largest report submissions']=puppetserver_largest_reports
   )
 
-  #TODO: function
   select opt in "${!menu[@]}"; do
     confirm_opt "$opt" "${!menu[@]}" || {
       warn 'Please enter a valid number'
