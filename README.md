@@ -9,6 +9,9 @@ For convenience, you may want to add this repo to `$PATH` instead of using absol
 
 Below is a brief description of each job.
 
+### support-tooling.sh
+An interactive wrapper script for some of the more common/useful things you can do with this repo.  Run `support-tooling.sh` from within an extracted support script and a simple menu will guide the user.
+
 ### puppet-top-api-calls.sh
 
 Summarize the count, average duration, and 99th percentile duration of per endpoint in Puppet server and DB access logs per 30 minute interval.  Can also graph the count and average duration in `gnuplot`
