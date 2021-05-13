@@ -6,10 +6,8 @@ warn() {
 }
 
 latest_logs() {
-  while IFS= read -rd '' line; do
-    _latest+=("${line#* }")
-  done < <(find . -type f -name "$1*" -printf '%T@ %p\0' | sort -znr)
-
+  # Absolutely terrible hack because the dev is too lazy to deal with non-GNU utilities
+  _latest=($(ls -t **/*"$1"*))
 }
 
 puppetserver_latest() {
@@ -67,6 +65,9 @@ comm_cmds() {
     break
   done
 }
+
+shopt -s globstar nullglob
+_tmp="$(mktemp)"
 
 base_dir="${BASH_SOURCE[0]%/*}"
 PS3="Select an option by number: "
