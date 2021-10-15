@@ -40,6 +40,16 @@ puppetserver_largest_reports() {
   "$base_dir"/puppetserver_largest_reports.awk "${_latest[0]}" | sort -nr | cut -f2- -d ' ' | head
 }
 
+console_largest_facts() {
+  latest_logs "console-services-api-access"
+  (( ${#_latest[@]} > 0 )) || {
+    warn 'No console-services-api-access.log found.' 'Please run me from the root of an extracted support script'
+    return
+  }
+
+  "$base_dir"/console_largest_facts.awk "${_latest[0]}" | sort -nr | cut -f2- -d ' ' | head
+}
+
 confirm_opt() {
   cur_opt=$1
   cur_menu=("$@")
@@ -53,6 +63,7 @@ comm_cmds() {
     ['Plot latest puppetserver-access.log']=puppetserver_latest
     ['Longest JRuby borrow times']=puppetserver_longest_borrows
     ['Largest report submissions']=puppetserver_largest_reports
+    ['Largest fact sizes']=console_largest_facts
   )
 
   select opt in "${!menu[@]}"; do
