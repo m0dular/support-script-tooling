@@ -4,6 +4,21 @@
 * mlr
 * gawk
 * gnuplot
+* bash 4+
+
+Note for MacOS users: to get a recent enough version of `bash`, you will need to manually install it, e.g.
+
+```
+brew install bash
+```
+
+Then confirm the version with
+
+```
+/usr/bin/env bash --version
+```
+
+See issue #13 if you have suggetions to improve this.
 
 For convenience, you may want to add this repo to `$PATH` instead of using absolute paths.
 
