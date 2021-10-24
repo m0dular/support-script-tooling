@@ -1,12 +1,31 @@
 # support-script-tooling
 
 ## Requirements
+* mlr
 * gawk
 * gnuplot
+* bash 4+
+
+Note for MacOS users: to get a recent enough version of `bash`, you will need to manually install it, e.g.
+
+```
+brew install bash
+```
+
+Then confirm the version with
+
+```
+/usr/bin/env bash --version
+```
+
+See issue #13 if you have suggetions to improve this.
 
 For convenience, you may want to add this repo to `$PATH` instead of using absolute paths.
 
 Below is a brief description of each job.
+
+### support-tooling.sh
+An interactive wrapper script for some of the more common/useful things you can do with this repo.  Run `support-tooling.sh` from within an extracted support script and a simple menu will guide the user.
 
 ### puppet-top-api-calls.sh
 
