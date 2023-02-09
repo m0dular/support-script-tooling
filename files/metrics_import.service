@@ -1,0 +1,11 @@
+[Unit]
+Description=Oneshot service to auto import Puppet metrics
+Wants=metrics_import.timer
+
+[Service]
+Type=oneshot
+WorkingDirectory=/root/metrics_import/puppet_operational_dashboards
+ExecStart=/root/metrics_import/puppet_operational_dashboards/metrics_import.sh
+
+[Install]
+WantedBy=multi-user.target
