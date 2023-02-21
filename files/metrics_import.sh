@@ -33,3 +33,5 @@ for f in /opt/mft-automations/puppet_enterprise_support*gz; do
    rm -- "$_tmp"
    rm -- "$f"
 done
+
+find /opt/mft-automations/err/ -type f -name "puppet_enterprise_support*gz" -mtime +30 -delete
