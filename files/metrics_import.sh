@@ -1,7 +1,7 @@
 #!/bin/bash
 shopt -s nullglob
 
-for f in /opt/mft-automations/puppet_enterprise_support*gz; do
+for f in /opt/mft-automations/puppet_enterprise_support*gz /opt/mft-automations/puppet_enterprise_support*gz.gpg; do
    # Does the file have a 5 digit ticket number after puppet_enterprise_support_
    has_ticket=$(echo "$f" | grep -Eo -- 'puppet_enterprise_support_[[:digit:]]{5}_')
 
@@ -9,6 +9,19 @@ for f in /opt/mft-automations/puppet_enterprise_support*gz; do
       echo "ERROR: no ticket ID found in $f"
       mv "$f" /opt/mft-automations/err
       continue
+   fi
+
+   if [[ "${f##*.}" == 'gpg' ]]; then
+     # Decrypt the file to the same location as the source, stripping the .gpg suffix
+     # Delete source file if it decrypts ok, otherwise move it to err/
+     if cat /root/.support_gpg | gpg --pinentry-mode loopback --passphrase-fd 0 --batch --yes --output "${f%.*}" --decrypt "$f"; then
+       rm -- "$f"
+       f="${f%.*}"
+     else
+       echo "ERROR: failed to decrypt $f"
+       mv "$f" /opt/mft-automations/err
+       continue
+     fi
    fi
 
    if ! tar tf "$f" | grep -q -m 1 'metrics\/.*json'; then

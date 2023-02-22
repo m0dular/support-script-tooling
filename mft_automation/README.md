@@ -20,6 +20,14 @@ git clone https://github.com/puppetlabs/puppet_operational_dashboards.git
 bolt plan run puppet_operational_dashboards::provision_dashboard --targets localhost
 ```
 
+## Set up GPG key and passphrase
+* Save the Support GPG key from 1pass to a file `key.asc`
+* Import it
+```bash
+gpg --import key.asc
+```
+* Save the key's passphrase to a file `/root/.support_gpg`
+
 ## Set up the service to import metrics from sup scripts
 * Save `files/metrics_import.service` to `/etc/systemd/system/metrics_import.service`
 * Save `files/metrics_import.timer` to `/etc/systemd/system/metrics_import.timer`
